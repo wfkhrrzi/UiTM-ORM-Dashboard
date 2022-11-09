@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+*{
+    font-family: 'Inter', sans-serif;
+
+}
+
+body{
+    /* background-image: linear-gradient(to right, #092215 , #000000); */
+    /* background: #071716; */
+    background: #171821;
+    /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); */
+}
+
+p{
+    font-size: 13px;
+}
+
+.navbar{
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+.navbar.bg-light{
+    background-color: transparent !important;
+}
+
+.title-chart-container{
+    /* background-color: #151718; */
+    background-color: #0d0c0f;
+    color:#529c93;
+    border-radius: 7px;
+}
+
+.title-chart{
+    font-size: 12px;
+}
+
+.title-chart-size{
+    font-size: 1rem;
+}
+
+.trending-topic-content{
+    font-size: 15px;
+    color: whitesmoke;
+}
+
+.trending-topic-index{
+    margin-right: 7px;
+    color: #1c99e7;
+}
+
+.second-topic-config-container{
+    background-color: #0d0c0f;
+    /* color:#529c93; */
+    border-radius: 7px;  
+}
+
+.second-topic-config-title{
+    color: whitesmoke;
+    font-weight: 600;
+}
+
+.second-topic-config-button{
+    font-size: 0.85rem;
+}
+
+.top-tweet-container{
+    font-size: 13px;
+    background-color: transparent;
+    color: whitesmoke;
+}
+
+.second-topic-stats-title{
+    border-bottom: 2px solid;
+}
+
+@media only screen and (min-width: 1740px) {
+    #second-topic-config-selected{
+        display: inline !important;
+    }
+}
