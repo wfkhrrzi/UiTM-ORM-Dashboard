@@ -12,7 +12,7 @@ from wordcloud import WordCloud
 from datetime import datetime
 import math
 from pages.topics.topics_data import get_ranked_topics,get_dataset,get_topics_over_time,get_all_topics
-from layout.layout import title_chart
+from layout.utils import title_chart
 
 dash.register_page(__name__,path='/topics')
 

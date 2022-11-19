@@ -6,7 +6,7 @@ from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 from wordcloud import WordCloud
 from pages.sentiment.sentiment_data import get_dataset, get_processed_dataset, get_sentiment_by_topic, get_sentiment_count, get_sentiment_over_time, get_trending_topics
-from layout.layout import title_chart
+from layout.utils import title_chart
 import plotly.express as px
 import plotly.graph_objs as go
 
