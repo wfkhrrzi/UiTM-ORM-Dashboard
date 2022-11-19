@@ -9,7 +9,6 @@ import pandas as pd
 from layout.utils import title_chart
 from pages.topics.topics_data import get_ranked_topics
 
-dash.register_page(__name__,path='/classify-tweet')
 
 sentiment_colors={
     'positive':'#00ba7c',

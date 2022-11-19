@@ -3,9 +3,6 @@ from dash import callback, callback_context as ctx, ALL, dcc, html
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-# import pandas as pd
-# import requests
-# import plotly
 import plotly.graph_objs as go
 import plotly.express as px
 from wordcloud import WordCloud
@@ -14,7 +11,6 @@ import math
 from pages.topics.topics_data import get_ranked_topics,get_dataset,get_topics_over_time,get_all_topics
 from layout.utils import title_chart
 
-dash.register_page(__name__,path='/topics')
 
 # INITIALIZATION
 topics_all = get_all_topics()

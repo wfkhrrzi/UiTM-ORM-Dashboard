@@ -10,7 +10,6 @@ from layout.utils import title_chart
 import plotly.express as px
 import plotly.graph_objs as go
 
-dash.register_page(__name__,path='/')
 
 df = get_dataset()
 processed_df = get_processed_dataset()
