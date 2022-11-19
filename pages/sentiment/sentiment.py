@@ -231,7 +231,11 @@ layout = dbc.Container(
                     [
                         html.Div([
                             title_chart('word cloud'),
-                            dcc.Graph(id='sentiment-wordcloud')
+                            dcc.Loading(
+                                id="loading-sentiment-wordcloud",
+                                type="default",
+                                children=dcc.Graph(id='sentiment-wordcloud'),
+                            ),
                         ])
                     ],
                     width=12,

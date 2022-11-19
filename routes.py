@@ -20,10 +20,18 @@ def render_page_content(pathname):
     elif pathname == classify_tweet_page_location:
         return classify_tweet.layout
     # If the user tries to reach a different page, return a 404 message
-    return dbc.Jumbotron(
-        [
-            html.H1("404: Not found", className="text-danger"),
-            html.Hr(),
-            html.P(f"The pathname {pathname} was not recognised..."),
-        ]
+    return html.Div(
+        html.Div(
+            dbc.Container(
+                [
+                    html.H1("404: Not found", className="text-danger"),
+                    html.Hr(),
+                    html.P(f"The pathname {pathname} was not recognised..."),
+                ],
+                fluid=True,
+                className="py-3",
+            ),
+            className="p-3 bg-light rounded-3 mx-auto",
+        ),
+        className="p-3",
     )

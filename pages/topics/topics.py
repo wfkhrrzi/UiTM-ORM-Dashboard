@@ -306,7 +306,11 @@ layout = dbc.Container(
                             dbc.Col([
                                 html.Div([
                                     title_chart('word cloud'),
-                                    dcc.Graph(id='second-topic-wordcloud')
+                                    dcc.Loading(
+                                        id="loading-topic-wordcloud",
+                                        type="default",
+                                        children=dcc.Graph(id='second-topic-wordcloud'),
+                                    ),
                                 ])
                             ],md=12,lg=6,xl=6,xxl=6,),
                         ]
