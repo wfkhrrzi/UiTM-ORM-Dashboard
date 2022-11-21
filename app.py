@@ -50,3 +50,22 @@ login_manager.login_view = '/login'
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+#callback to change tab title
+app.clientside_callback(
+    """
+    function(pathname) {
+        if (pathname == '/'){
+            pathname = '/sentiment'
+        } 
+        else if (pathname == '/logout'){
+            pathname = 'login'
+        }
+        title = pathname.substr(1)
+        title = title.charAt(0).toUpperCase() + title.slice(1)
+        document.title = title + " | UiTM Online Reputation"
+    }
+    """,
+    Output('tab-title', 'children'),
+    Input('url', 'pathname')
+)

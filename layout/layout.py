@@ -37,22 +37,43 @@ navbar =  dbc.Navbar(
     # color="dark",
     dark=True,
     class_name="mb-1",
-    id="layout-navbar",
+    # id="layout-navbar",
 )
 
-# callback for login/logout buttons
+layout = html.Div(
+    [
+        dcc.Location(id="url",refresh=False),
+        dcc.Store(id="redirect-url"),
+        html.Div(id='tab-title'),
+        html.Div(id="layout-navbar-container"),
+        html.Div(id="page-content"),
+        html.Div(className="mb-5")
+    ],
+    # fluid=True
+)
+
 @callback(
-    Output("layout-navbar","style"),
-    Output("logout-nav","style"),
+    Output("layout-navbar-container","children"),
     Input("url","pathname")
 )
-def show_logout(pathname):
-    if hasattr(current_user, 'is_authenticated'):
-        if current_user.is_authenticated and pathname != logout_url:
-            return [{"display":"initial"} for i in range(2)]
-    return [{"display":"none"} for i in range(2)]
+def show_navbar(pathname):
+    if current_user:
+        if hasattr(current_user, 'is_authenticated'):
+            if current_user.is_authenticated and pathname != logout_url:
+                return navbar
+    return None
 
-# callback for toggling the collapse on small screens
+# @callback(
+#     # Output("layout-navbar","style"),
+#     Output("logout-nav","style"),
+#     Input("url","pathname")
+# )
+# def show_logout(pathname):
+#     if hasattr(current_user, 'is_authenticated'):
+#         if current_user.is_authenticated and pathname != logout_url:
+#             return [{"display":"initial"} for i in range(2)]
+#     return [{"display":"none"} for i in range(2)]
+
 @callback(
     Output("navbar-collapse", "is_open"),
     [Input("navbar-toggler", "n_clicks")],
@@ -63,14 +84,4 @@ def toggle_navbar_collapse(n, is_open):
         return not is_open
     return is_open
 
-layout = html.Div(
-    [
-        dcc.Location(id="url",refresh=False),
-        dcc.Store(id="redirect-url"),
-        navbar,
-        html.Div(id="page-content"),
-        html.Div(className="mb-5")
-    ],
-    # fluid=True
-)
 
