@@ -3,7 +3,8 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
-from utils.constants import classify_tweet_page_location,sentiment_page_location,topic_page_location
+from utils.constants import classify_tweet_page_location,sentiment_page_location,topic_page_location,logout_url
+from flask_login import current_user
 
 navbar =  dbc.Navbar(
     dbc.Container(
@@ -14,15 +15,13 @@ navbar =  dbc.Navbar(
             dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
 
             dbc.Collapse(
-                
+
                 dbc.Nav(
                     [
-                        dbc.NavItem(
-                            dbc.NavLink("Sentiment",href=sentiment_page_location),
-                            class_name="px-md-2"
-                        ),
+                        dbc.NavItem(dbc.NavLink("Sentiment",href=sentiment_page_location),class_name="px-md-2"),
                         dbc.NavItem(dbc.NavLink("Topic",href=topic_page_location),class_name="px-md-2"),
                         dbc.NavItem(dbc.NavLink("Classify Tweet",href=classify_tweet_page_location),class_name="px-md-2"),
+                        dbc.NavItem(dbc.NavLink("Logout",href=logout_url),id="logout-nav",class_name="px-md-2"),
                     ],
                     navbar=True,
                     class_name="ms-auto"
@@ -37,10 +36,23 @@ navbar =  dbc.Navbar(
     ),
     # color="dark",
     dark=True,
-    class_name="mb-1"
+    class_name="mb-1",
+    id="layout-navbar",
 )
 
-# add callback for toggling the collapse on small screens
+# callback for login/logout buttons
+@callback(
+    Output("layout-navbar","style"),
+    Output("logout-nav","style"),
+    Input("url","pathname")
+)
+def show_logout(pathname):
+    if hasattr(current_user, 'is_authenticated'):
+        if current_user.is_authenticated and pathname != logout_url:
+            return [{"display":"initial"} for i in range(2)]
+    return [{"display":"none"} for i in range(2)]
+
+# callback for toggling the collapse on small screens
 @callback(
     Output("navbar-collapse", "is_open"),
     [Input("navbar-toggler", "n_clicks")],
@@ -53,10 +65,12 @@ def toggle_navbar_collapse(n, is_open):
 
 layout = html.Div(
     [
-        dcc.Location(id="url"),
+        dcc.Location(id="url",refresh=False),
+        dcc.Store(id="redirect-url"),
         navbar,
         html.Div(id="page-content"),
         html.Div(className="mb-5")
     ],
     # fluid=True
 )
+
