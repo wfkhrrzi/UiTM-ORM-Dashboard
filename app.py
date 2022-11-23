@@ -59,7 +59,7 @@ app.clientside_callback(
             pathname = '/sentiment'
         } 
         else if (pathname == '/logout'){
-            pathname = 'login'
+            pathname = '/login'
         }
         title = pathname.substr(1)
         title = title.charAt(0).toUpperCase() + title.slice(1)

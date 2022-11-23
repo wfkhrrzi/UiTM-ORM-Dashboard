@@ -43,7 +43,8 @@ navbar =  dbc.Navbar(
 layout = html.Div(
     [
         dcc.Location(id="url",refresh=False),
-        dcc.Store(id="redirect-url"),
+        dcc.Location(id="redirect-url-loc",refresh=False),
+        # dcc.Store(id="redirect-url"),
         html.Div(id='tab-title'),
         html.Div(id="layout-navbar-container"),
         html.Div(id="page-content"),

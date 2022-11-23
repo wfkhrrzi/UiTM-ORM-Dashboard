@@ -9,6 +9,7 @@ import pandas as pd
 from layout.utils import title_chart
 from pages.topics.topics_data import get_ranked_topics
 
+# layout = dbc.Container("CLASSIFY TWEET",fluid=True,class_name="text-center text-light fw-bolder")
 
 sentiment_colors={
     'positive':'#00ba7c',

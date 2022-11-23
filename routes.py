@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 from dash import html, callback, no_update
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 from utils.constants import *
 
@@ -11,61 +11,71 @@ from pages.auth import login
 
 from flask_login import logout_user, current_user
 
-def is_authenticated(page_layout):
+# @callback(
+#     Output("redirect-url","data"),
+#     Input("url","pathname")
+# )
+# def store_redirect_url(pathname):
+#     if current_user.is_authenticated:
+#         return ''
+#     else:
+#         return pathname
+
+def is_authenticated(page_layout,page_url):
     if current_user.is_authenticated:
-        return page_layout
+        return page_url,page_layout
     else:
-        return login.layout
+        return f'{login_page_location}?redirect={page_url}',login.layout
 
 @callback(
-    Output("redirect-url","data"),
-    Input("url","pathname")
-)
-def store_redirect_url(pathname):
-    if current_user.is_authenticated:
-        return ''
-    else:
-        return pathname
-
-@callback(
+    Output("redirect-url-loc", "pathname"), 
     Output("page-content", "children"), 
-    Input("url", "pathname")
+    Input("url", "pathname"),
+    State("redirect-url-loc", "pathname"),
 )
-def render_page_content(pathname):
+def render_page_content(pathname, current_url):
     if pathname == sentiment_page_location or pathname == '/sentiment':
         # return sentiment.layout
-        return is_authenticated(sentiment.layout)
+        return is_authenticated(sentiment.layout,pathname)
     elif pathname == topic_page_location:
-        return is_authenticated(topics.layout)
+        return is_authenticated(topics.layout,pathname)
     elif pathname == classify_tweet_page_location:
-        return is_authenticated(classify_tweet.layout)
+        return is_authenticated(classify_tweet.layout,pathname)
     elif pathname == logout_url:
         if current_user.is_authenticated:
             logout_user()
-            return login.layout
-        else:
-            # return html.Div('FAILED LOGOUT',style={"font-color":"white"})
-            return no_update
+    
+        return login_page_location,login.layout
+
     elif pathname == login_page_location:
-        if current_user.is_authenticated:
-            return no_update
+        if hasattr(current_user, 'is_authenticated'):
+            if current_user.is_authenticated:
+                # STILL TAK FIXED LOGIN REDIRECT AFTER LOGGED IN
+                print('is_auth is true & current url is ',current_url)
+                return (current_url, no_update)
+            else:
+                print('is_auth is not true')
+                return (no_update, login.layout)
         else:
-            return login.layout
-        
+            return (no_update, no_update)
+                    
     # If the user tries to reach a different page, return a 404 message
     else:
-        return html.Div(
+        return (
+            no_update,       
             html.Div(
-                dbc.Container(
-                    [
-                        html.H1("404: Not found", className="text-danger"),
-                        html.Hr(),
-                        html.P(f"The pathname {pathname} was not recognised..."),
-                    ],
-                    fluid=True,
-                    className="py-3",
+                html.Div(
+                    dbc.Container(
+                        [
+                            html.H1("404: Not found", className="text-danger"),
+                            html.Hr(),
+                            html.P(f"The pathname {pathname} was not recognised..."),
+                        ],
+                        fluid=True,
+                        className="py-3",
+                    ),
+                    className="p-3 bg-light rounded-3 mx-auto",
                 ),
-                className="p-3 bg-light rounded-3 mx-auto",
-            ),
-            className="p-3",
+                className="p-3",
+            )
         )

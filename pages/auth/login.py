@@ -67,21 +67,26 @@ layout = html.Div(
     }
 )
 
+from urllib.parse import parse_qs,urlsplit
+
 @callback(Output('url', 'pathname'),
     [Input('login-button', 'n_clicks'),
     Input('uname-box', 'n_submit'),
     Input('pwd-box', 'n_submit')],
     [State('uname-box', 'value'),
     State('pwd-box', 'value'),
-    State("redirect-url","data")]
+    State("redirect-url-loc","pathname")]
 )
-def success(n_clicks, n_submit_uname, n_submit_pwd, input1, input2, data):
+def success(n_clicks, n_submit_uname, n_submit_pwd, input1, input2, redirect_url):
     user = User.query.filter_by(username=input1).first()
     if user:
+        # verify password
         if check_password_hash(user.password, input2):
             login_user(user)
-            if data:
-                return data
+            # check for redirect
+            redirect_url_dict = parse_qs(urlsplit(redirect_url).query)
+            if 'redirect' in redirect_url_dict:
+                return redirect_url_dict['redirect'][0]
             else:
                 return '/'
         else:
