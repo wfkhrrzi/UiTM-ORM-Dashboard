@@ -3,7 +3,7 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
-from utils.constants import classify_tweet_page_location,sentiment_page_location,topic_page_location,logout_url
+from utils.constants import classify_tweet_page_location,sentiment_page_location,topic_page_location,logout_url,reputation_page_location
 from flask_login import current_user
 
 navbar =  dbc.Navbar(
@@ -18,6 +18,7 @@ navbar =  dbc.Navbar(
 
                 dbc.Nav(
                     [
+                        dbc.NavItem(dbc.NavLink("Reputation",href=reputation_page_location),class_name="px-md-2"),
                         dbc.NavItem(dbc.NavLink("Sentiment",href=sentiment_page_location),class_name="px-md-2"),
                         dbc.NavItem(dbc.NavLink("Topic",href=topic_page_location),class_name="px-md-2"),
                         dbc.NavItem(dbc.NavLink("Classify Tweet",href=classify_tweet_page_location),class_name="px-md-2"),

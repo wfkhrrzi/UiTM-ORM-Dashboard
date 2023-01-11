@@ -17,49 +17,6 @@ sentiment_colors={
     'negative':'#d90912',
 }
 
-def donut_chart(percent:int, theme_color:str):
-    values = [percent,100-percent]
-    colors=[theme_color,'#ffffff00','#ffffff00']
-
-    fig = go.Figure(data=go.Pie(values=values,hole=.7))
-
-    fig.update_layout(
-        annotations=[
-            dict(
-                text=f"{percent}%", x=0.5, y=0.5, font_size=20,showarrow=False,
-                font=dict(color=theme_color)
-            )
-        ],
-        showlegend=False,
-        margin=dict(
-            l=5,
-            r=5,
-            b=5,
-            t=5,
-            # pad=10
-        ),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        autosize=False,
-        width=140,
-        height=140,
-    )
-
-    fig.update_traces(
-        hoverinfo='none',
-        textinfo='none',
-        marker=dict(
-            colors=colors,
-            line=dict(
-                color='#d9dddc',
-                width=1
-            )
-        )
-    )
-
-    return fig
-
-
 layout = dbc.Container(
     [
         # page title
@@ -143,6 +100,48 @@ layout = dbc.Container(
 
     ], 
 )
+
+def donut_chart(percent, theme_color:str):
+    values = [percent,100-percent]
+    colors=[theme_color,'#ffffff00','#ffffff00']
+
+    fig = go.Figure(data=go.Pie(values=values,hole=.7))
+
+    fig.update_layout(
+        annotations=[
+            dict(
+                text=f"{percent}%", x=0.5, y=0.5, font_size=20,showarrow=False,
+                font=dict(color=theme_color)
+            )
+        ],
+        showlegend=False,
+        margin=dict(
+            l=5,
+            r=5,
+            b=5,
+            t=5,
+            # pad=10
+        ),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        autosize=False,
+        width=140,
+        height=140,
+    )
+
+    fig.update_traces(
+        hoverinfo='none',
+        textinfo='none',
+        marker=dict(
+            colors=colors,
+            line=dict(
+                color='#d9dddc',
+                width=1
+            )
+        )
+    )
+
+    return fig
 
 @callback(
     Output("pred-sentiment","children"),

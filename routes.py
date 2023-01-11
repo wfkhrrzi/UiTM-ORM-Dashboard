@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output, State
 
 from utils.constants import *
 
+from pages.reputation import reputation
 from pages.sentiment import sentiment
 from pages.topics import topics
 from pages.classify_tweet import classify_tweet
@@ -34,8 +35,10 @@ def is_authenticated(page_layout,page_url):
     State("redirect-url-loc", "pathname"),
 )
 def render_page_content(pathname, current_url):
-    if pathname == sentiment_page_location or pathname == '/sentiment':
-        # return sentiment.layout
+    if pathname == reputation_page_location or pathname == '/':
+        # return pathname,reputation.layout
+        return is_authenticated(reputation.layout,pathname)
+    elif pathname == sentiment_page_location:
         return is_authenticated(sentiment.layout,pathname)
     elif pathname == topic_page_location:
         return is_authenticated(topics.layout,pathname)

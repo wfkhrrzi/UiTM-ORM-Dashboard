@@ -15,7 +15,7 @@ def get_topic_barchart() -> plotly.graph_objs.Figure:
     return topic_barchart
 
 def get_dataset():
-    return pd.read_csv('dataset/topic-labelled.csv')
+    return pd.read_csv('dataset/topic-labelled-20221226T173040-normalized-uitmRemoved-nr30.csv')
 
 def get_ranked_topics() -> pd.DataFrame:
     df = get_dataset()

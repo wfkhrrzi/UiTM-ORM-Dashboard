@@ -1,4 +1,5 @@
-sentiment_page_location = "/"
+reputation_page_location = "/reputation"
+sentiment_page_location = "/sentiment"
 topic_page_location = "/topics"
 classify_tweet_page_location = "/classify-tweet"
 

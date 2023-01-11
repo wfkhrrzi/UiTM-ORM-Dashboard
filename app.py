@@ -56,7 +56,7 @@ app.clientside_callback(
     """
     function(pathname) {
         if (pathname == '/'){
-            pathname = '/sentiment'
+            pathname = '/reputation'
         } 
         else if (pathname == '/logout'){
             pathname = '/login'

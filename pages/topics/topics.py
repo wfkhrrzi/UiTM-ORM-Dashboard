@@ -11,6 +11,7 @@ import math
 from pages.topics.topics_data import get_ranked_topics,get_dataset,get_topics_over_time,get_all_topics
 from layout.utils import title_chart
 
+# layout = dbc.Container("TOPIC",fluid=True,class_name="text-center text-light fw-bolder")
 
 # INITIALIZATION
 topics_all = get_all_topics()
