@@ -6,11 +6,11 @@ from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 from wordcloud import WordCloud
 from pages.sentiment.sentiment_data import get_dataset, get_processed_dataset, get_sentiment_by_topic, get_sentiment_count, get_sentiment_over_time, get_trending_topics
-from layout.layout import title_chart
+from layout.utils import title_chart
 import plotly.express as px
 import plotly.graph_objs as go
 
-dash.register_page(__name__,path='/')
+# layout = dbc.Container("SENTIMENT",fluid=True,class_name="text-center text-light fw-bolder")
 
 df = get_dataset()
 processed_df = get_processed_dataset()
@@ -22,7 +22,15 @@ sentiment_count_fig.update_traces(
     hoverinfo='label+value', 
     textinfo='label+percent',
     marker=dict(
-        colors=['#00ba7c','#ea3b30','#ef8823',],
+        # colors=['#00ba7c','#ea3b30','#ef8823',],
+        colors=list(
+            map(
+                lambda x: '#00ba7c' if x.lower() == "positive" \
+                else '#ef8823' if x.lower() == "neutral" \
+                else '#ea3b30',
+                sentiment_count['Sentiment'].tolist()
+            )
+        ),
     ),
     insidetextfont=dict(
         family = 'Roboto, sans-serif',
@@ -59,7 +67,7 @@ layout = dbc.Container(
         # first layer
         dbc.Row(
             [
-                # trending topics
+                # sentiment count
                 dbc.Col(
                     [
                         title_chart('sentiment count'),
@@ -232,7 +240,11 @@ layout = dbc.Container(
                     [
                         html.Div([
                             title_chart('word cloud'),
-                            dcc.Graph(id='sentiment-wordcloud')
+                            dcc.Loading(
+                                id="loading-sentiment-wordcloud",
+                                type="default",
+                                children=dcc.Graph(id='sentiment-wordcloud'),
+                            ),
                         ])
                     ],
                     width=12,

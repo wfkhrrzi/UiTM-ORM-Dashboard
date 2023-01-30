@@ -4,18 +4,12 @@ from pages.topics.topics_data import get_ranked_topics, get_dataset as topic_dat
 import numpy as np
 
 def get_dataset() -> pd.DataFrame:
-    return pd.read_csv('dataset/final_dataset_cleaned_neutral.csv')
+    return pd.read_csv('dataset/labelled_pred_set_14-12-23.csv')
+    # return pd.read_csv('dataset/final_dataset_cleaned_neutral_resetIndex.csv')
 
 def get_processed_dataset():
     df = get_dataset()
     topic_df = topic_dataset()
-    # temporary tweet id fix
-    topic_tweet_id = topic_df['URL'].apply(lambda x: x.split('/')[5])
-    topic_tweet_id = topic_tweet_id.astype(np.int64)
-    topic_df['Tweet Id'] = topic_tweet_id
-    tweet_id = df['URL'].apply(lambda x: x.split('/')[5])
-    tweet_id = tweet_id.astype(np.int64)
-    df['Tweet Id'] = tweet_id
 
     # required processes
     df = pd.merge(df,topic_df[['Tweet Id','Processed noisy tweet']],on='Tweet Id',how='left')
@@ -40,14 +34,6 @@ def get_sentiment_over_time() -> pd.DataFrame:
 def get_sentiment_by_topic() -> pd.DataFrame:
     topic_df = topic_dataset()
     df = get_dataset()
-    
-    # temporary tweet id fix
-    topic_tweet_id = topic_df['URL'].apply(lambda x: x.split('/')[5])
-    topic_tweet_id = topic_tweet_id.astype(np.int64)
-    topic_df['Tweet Id'] = topic_tweet_id
-    tweet_id = df['URL'].apply(lambda x: x.split('/')[5])
-    tweet_id = tweet_id.astype(np.int64)
-    df['Tweet Id'] = tweet_id
 
     # required processes
     topic_sentiment_df = pd.merge(df,topic_df[['Tweet Id','Topic reassigned']],on='Tweet Id',how='left')
@@ -71,15 +57,8 @@ def get_sentiment_by_topic() -> pd.DataFrame:
     return topic_sentiment_df
 
 def get_trending_topics():
-    # fix tweet id
     df = get_dataset()
     topic_df = topic_dataset()
-    topic_tweet_id = topic_df['URL'].apply(lambda x: x.split('/')[5])
-    topic_tweet_id = topic_tweet_id.astype(np.int64)
-    topic_df['Tweet Id'] = topic_tweet_id
-    tweet_id = df['URL'].apply(lambda x: x.split('/')[5])
-    tweet_id = tweet_id.astype(np.int64)
-    df['Tweet Id'] = tweet_id
 
     # merge processed tweet
     df = pd.merge(df,topic_df[['Tweet Id','Processed noisy tweet','Topic reassigned']],on='Tweet Id',how='left')

@@ -1,74 +1,71 @@
+import os
 import dash
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+import flask
+from layout.layout import layout
+from flask_login import LoginManager
+from env.config import DB_NAME
 
-from env.config import APP_DEBUG
+server = flask.Flask(__name__)
 
 app = Dash(__name__,
-    # server=server,
-    use_pages=True,
+    server=server,
     external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
+    suppress_callback_exceptions=True,
     # external_scripts=
 )
 
-navbar =  dbc.Navbar(
-    dbc.Container(
-        [
-            
-            dbc.NavbarBrand("UiTM Online Reputation", href="/"),
-            
-            dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+app.layout = layout
 
-            dbc.Collapse(
-                
-                dbc.Nav(
-                    [
-                        dbc.NavItem(
-                            dbc.NavLink("Sentiment",href=dash.page_registry['pages.sentiment.sentiment']['path']),
-                            class_name="px-md-2"
-                        ),
-                        dbc.NavItem(dbc.NavLink("Topic",href=dash.page_registry['pages.topics.topics']['path']),class_name="px-md-2"),
-                        dbc.NavItem(dbc.NavLink("Classify Tweet",href=dash.page_registry['pages.classify_tweet.classify_tweet']['path']),class_name="px-md-2"),
-                    ],
-                    navbar=True,
-                    class_name="ms-auto"
-                ),
-
-                id="navbar-collapse",
-                is_open=False,
-                navbar=True,
-            ),
-            
-        ],
-    ),
-    # color="dark",
-    dark=True,
-    class_name="mb-1"
+#server config
+server = app.server
+# server.config['SERVER_NAME']='uitm-orm.test:8050'
+server.config.update(
+    SECRET_KEY=os.urandom(12),
+    SQLALCHEMY_DATABASE_URI=f"sqlite:///{os.path.join(server.instance_path, DB_NAME)}.db",
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
 )
 
-# add callback for toggling the collapse on small screens
-@app.callback(
-    Output("navbar-collapse", "is_open"),
-    [Input("navbar-toggler", "n_clicks")],
-    [State("navbar-collapse", "is_open")],
-)
-def toggle_navbar_collapse(n, is_open):
-    if n:
-        return not is_open
-    return is_open
+from models import User, db
 
-app.layout = html.Div(
-    [
-        navbar,
-        dash.page_container,
-        html.Div(className="mb-5")
-    ],
-    # fluid=True
-)
+#initiate db
+db.init_app(server)
 
-if __name__=="__main__":
-    app.run(
-        debug=APP_DEBUG,
-        # dev_tools_hot_reload=False,
-    )
+#create db if not exist
+if not os.path.exists(f"instance/{DB_NAME}.db"):
+    with server.app_context():
+        db.create_all()
+    print(f"database '{DB_NAME}.db' created")
+# else:
+#     print(f"database '{DB_NAME}.db' already exists")
+
+
+#setup LoginManager for the server
+login_manager = LoginManager()
+login_manager.init_app(server)
+login_manager.login_view = '/login'
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+#callback to change tab title
+app.clientside_callback(
+    """
+    function(pathname) {
+        if (pathname == '/'){
+            pathname = '/reputation'
+        } 
+        else if (pathname == '/logout'){
+            pathname = '/login'
+        }
+        title = pathname.substr(1)
+        title = title.charAt(0).toUpperCase() + title.slice(1)
+        document.title = title + " | UiTM Online Reputation"
+    }
+    """,
+    Output('tab-title', 'children'),
+    Input('url', 'pathname')
+)

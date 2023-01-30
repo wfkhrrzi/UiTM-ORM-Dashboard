@@ -76,8 +76,27 @@ p{
     border-bottom: 2px solid;
 }
 
+.sentiment-prediction-text{
+    font-size: 80px;
+}
+
+.topic-prediction-text{
+    font-size: 60px;
+}
+
 @media only screen and (min-width: 1740px) {
     #second-topic-config-selected{
         display: inline !important;
     }
 }
+
+@media only screen and (max-width: 576px) {
+    .sentiment-prediction-text{
+        font-size: 40px;
+    }
+
+    .topic-prediction-text{
+        font-size: 30px;
+    }
+}
+
