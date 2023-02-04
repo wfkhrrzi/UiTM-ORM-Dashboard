@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import html, dcc
 import plotly.graph_objs as go
 
-from layout.utils import title_chart
+from layout.utils import title_chart, title_page_row
 from pages.classify_tweet.classify_tweet import sentiment_colors
 from pages.reputation.reputation_data import get_NBR,get_BFT
 
@@ -64,17 +64,9 @@ def donut_chart(percent, theme_color:str):
 
 layout = dbc.Container(
     [
-        # page title
-        dbc.Row(
-            [
-                html.H2(
-                    children="Reputation Metrics",
-                    style={'color':'#1d9bf0',},
-                    className="text-center",
-                ),
-            ],
-            class_name="my-4"
-        ),
+        # title
+        title_page_row('Reputation'),
+
         # html.Hr(),
         # stats
         dbc.Row(

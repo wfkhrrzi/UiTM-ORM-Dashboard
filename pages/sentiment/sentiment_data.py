@@ -46,15 +46,16 @@ def get_sentiment_by_topic() -> pd.DataFrame:
     topic_sentiment_df = topic_sentiment_df[['Tweet Id']].reset_index().pivot(index='Topic', columns='Sentiment', values='Tweet Id')
     topic_sentiment_df = topic_sentiment_df.reset_index()
     
-    topic_sentiment_df = topic_sentiment_df[topic_sentiment_df['Topic'] != -1]
+    topic_sentiment_df = topic_sentiment_df[(topic_sentiment_df['Topic'] != -1)&(topic_sentiment_df['Topic'] != 1)]
     topic_sentiment_df['total'] = topic_sentiment_df['positive'] + topic_sentiment_df['neutral'] + topic_sentiment_df['negative']
 
     ranked_topics = get_ranked_topics()
     topic_sentiment_df = topic_sentiment_df.iloc[pd.Index(topic_sentiment_df['Topic']).get_indexer(ranked_topics[:10]['Topic'].tolist())]
-    topic_name = ranked_topics[:10]['Name'].apply(lambda x: " ".join(x.split('_')[1:3]))
-    topic_sentiment_df.insert(1,topic_name.name,topic_name)
+    # topic_name = ranked_topics[:10]['Name'].apply(lambda x: " ".join(x.split('_')[1:3]))
+    topic_name = ranked_topics[:10]['CustomName']
+    topic_sentiment_df.insert(1,'Name',topic_name)
 
-    return topic_sentiment_df
+    return topic_sentiment_df.iloc[::-1] # reversed rpws
 
 def get_trending_topics():
     df = get_dataset()
@@ -66,8 +67,9 @@ def get_trending_topics():
     
     topic_info = get_topic_info()
     trending_topics = df.groupby(by=['Sentiment','Topic reassigned']).count()[['RTs Count','Likes Count']].sort_values(by=['RTs Count','Likes Count'],ascending=False).reset_index()
-    trending_topics = trending_topics[trending_topics['Topic reassigned']!=-1]
-    topic_name = trending_topics['Topic reassigned'].apply(lambda x: topic_info['Name'][topic_info['Topic']==x].tolist()[0])
+    trending_topics = trending_topics[(trending_topics['Topic reassigned']!=-1)&(trending_topics['Topic reassigned']!=1)]
+    # topic_name = trending_topics['Topic reassigned'].apply(lambda x: topic_info['Name'][topic_info['Topic']==x].tolist()[0])
+    topic_name = trending_topics['Topic reassigned'].apply(lambda x: topic_info['CustomName'][topic_info['Topic']==x].tolist()[0])
     trending_topics['Name'] = topic_name
 
     return trending_topics

@@ -15,17 +15,28 @@ def get_topic_barchart() -> plotly.graph_objs.Figure:
     return topic_barchart
 
 def get_dataset():
-    return pd.read_csv('dataset/topic-labelled-20221226T173040-normalized-uitmRemoved-nr30.csv')
+    return pd.read_csv('dataset/topic-labelled-20221226T173040-normalized-uitmRemoved-nr20.csv')
 
 def get_ranked_topics() -> pd.DataFrame:
     df = get_dataset()
     topic_info = get_topic_info()
     ranked_topics_df = df.groupby(['Topic reassigned']).sum()[['RTs Count','Likes Count']].reset_index().rename(columns={"Topic reassigned":"Topic"})
     ranked_topics = pd.concat([topic_info.set_index('Topic'),ranked_topics_df.set_index('Topic')],axis=1,join='inner').reset_index().sort_values(by=['RTs Count'],ascending=False)
-    ranked_topics = ranked_topics[ranked_topics['Topic'] != -1]
+    ranked_topics = ranked_topics[(ranked_topics['Topic'] != -1)&(ranked_topics['Topic'] != 1)]
     return ranked_topics
 
 def get_topics_over_time(topics: list) -> plotly.graph_objs.Figure:
     topic_over_time = requests.get(f"{BERTOPIC_HOST}/visualize-topics-over-time",params={'topics':topics}).json()
     topic_over_time = plotly.io.from_json(topic_over_time)
-    return topic_over_time
+    
+    topic_over_time=topic_over_time.to_dict()
+    topics_info = get_topic_info()
+    
+    #change topic name
+    for i, data in enumerate(topic_over_time["data"]):
+        topic_id = int(data['name'].split("_")[0])
+        topic_over_time["data"][i]['name']=topics_info.query(f'Topic == {str(topic_id)}')['CustomName'].values[0]
+    
+    topic_over_time['layout']['legend']['title']['text'] = 'Topic' #change legend title
+
+    return plotly.graph_objs.Figure(topic_over_time)

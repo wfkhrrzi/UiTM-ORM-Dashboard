@@ -6,7 +6,7 @@ from pages.classify_tweet.classify_tweet_data import sentiment_predict, topic_pr
 import plotly.graph_objs as go
 import pandas as pd
 
-from layout.utils import title_chart
+from layout.utils import title_chart, title_page_row
 from pages.topics.topics_data import get_ranked_topics
 
 # layout = dbc.Container("CLASSIFY TWEET",fluid=True,class_name="text-center text-light fw-bolder")
@@ -19,17 +19,9 @@ sentiment_colors={
 
 layout = dbc.Container(
     [
-        # page title
-        dbc.Row(
-            [
-                html.H2(
-                    children="Tweet Classification",
-                    style={'color':'#1d9bf0',},
-                    className="text-center",
-                ),
-            ],
-            class_name="my-4"
-        ),
+        # title
+        title_page_row('Classify Tweet'),
+
         # input (link, text)
         dbc.Row(
             [
