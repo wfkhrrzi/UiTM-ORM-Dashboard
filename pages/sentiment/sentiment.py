@@ -6,7 +6,7 @@ from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 from wordcloud import WordCloud
 from pages.sentiment.sentiment_data import get_dataset, get_processed_dataset, get_sentiment_by_topic, get_sentiment_count, get_sentiment_over_time, get_trending_topics
-from layout.utils import title_chart
+from layout.utils import title_chart, title_page_row
 import plotly.express as px
 import plotly.graph_objs as go
 
@@ -15,6 +15,12 @@ import plotly.graph_objs as go
 df = get_dataset()
 processed_df = get_processed_dataset()
 trending_topics = get_trending_topics()
+
+colors_sentiment = {
+    "positive":'#00ba7c',
+    "negative":'#ea3b30',
+    "neutral":'#ef8823'
+}
 
 sentiment_count = get_sentiment_count()
 sentiment_count_fig = px.pie(sentiment_count,values='Count',names='Sentiment',hole=.5,)
@@ -64,7 +70,10 @@ topic_sentiment_df = get_sentiment_by_topic()
 
 layout = dbc.Container(
     [
-        # first layer
+        # title
+        title_page_row('Sentiment'),
+
+       # first layer
         dbc.Row(
             [
                 # sentiment count
@@ -204,18 +213,55 @@ layout = dbc.Container(
         html.Hr(),
         # second layer 
         dcc.Store(id='store-selected-sentiment'),
-        dbc.Row(
+        html.Div(
             [
-                # sentiment buttons
-                dbc.Col(
+                html.Div(
                     [
                         dbc.Button("positive",id={'type':'sentiment-button','sentiment':'positive'},class_name="mx-3", color="success"),
                         dbc.Button("neutral",id={'type':'sentiment-button','sentiment':'neutral'},class_name="mx-3", color="warning"),
                         dbc.Button("negative",id={'type':'sentiment-button','sentiment':'negative'},class_name="mx-3", color="danger"),
-                    ]
+                    ],
+                    className="text-center order-sm-2"
+                ),
+
+                # sentiment title
+                html.Div(
+                    html.H6(
+                        [
+                            html.Span('Sentiment: '),
+                            html.Span(id='current-sentiment', className='text-uppercase')
+                        ]
+                        ,className="fw-bold m-0"),
+                    style={'color':'white'},
+                    className="order-sm-1 flex-sm-grow-1 px-2 pt-4 pb-1 pt-sm-0 pb-sm-0"
                 ),
             ],
-            class_name="text-center mb-3"
+            className="mb-3 d-sm-flex align-items-center"
+            # [
+            #     # sentiment title
+            #     dbc.Col(
+            #         html.P('sentiment'),
+            #         style={'color':'white'},
+            #         width=12,
+            #         # lg=4,
+            #         md=6,
+            #         xl=4,
+            #     ),
+                
+            #     dbc.Col(
+            #         [
+            #             dbc.Button("positive",id={'type':'sentiment-button','sentiment':'positive'},class_name="mx-3", color="success"),
+            #             dbc.Button("neutral",id={'type':'sentiment-button','sentiment':'neutral'},class_name="mx-3", color="warning"),
+            #             dbc.Button("negative",id={'type':'sentiment-button','sentiment':'negative'},class_name="mx-3", color="danger"),
+            #         ],
+            #         class_name="mx-left",
+            #         width=12,
+            #         # lg=4,
+            #         md=6,
+            #         xl=4,
+            #     ),
+            # ],
+            # class_name="mb-3 justify-content-between"
         ),
         # third layer
         dbc.Row(
@@ -270,6 +316,18 @@ layout = dbc.Container(
     ],
     fluid=True
 )
+
+@callback(
+    Output("current-sentiment","children"),
+    Output("current-sentiment","style"),
+    Input("store-selected-sentiment","data"),
+)
+def update_sentiment_title(data):
+    
+    if data == None:
+        return "positive",colors_sentiment['positive']
+    else:
+        return data['sentiment'],{'color':colors_sentiment[data['sentiment']]}
 
 @callback(
     Output("store-selected-sentiment","data"),
@@ -336,8 +394,9 @@ def generate_trending_topics(data):
     display_trending_topics = [
         html.Div(
             [
-                html.Span(f"#{index+1}",className='trending-topic-index', ),
-                html.Span(" ".join(topic.split('_')[1:3]),className="trending-topic-text")
+                html.Span(f"#{index+1}",className='trending-topic-index',),
+                # html.Span(" ".join(topic.split('_')[1:3]),className="trending-topic-text")
+                topic
             ],
             className="mb-1 p-2 trending-topic-content",
         )

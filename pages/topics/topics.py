@@ -9,7 +9,7 @@ from wordcloud import WordCloud
 from datetime import datetime
 import math
 from pages.topics.topics_data import get_ranked_topics,get_dataset,get_topics_over_time,get_all_topics
-from layout.utils import title_chart
+from layout.utils import title_chart, title_page_row
 
 # layout = dbc.Container("TOPIC",fluid=True,class_name="text-center text-light fw-bolder")
 
@@ -24,7 +24,7 @@ DISPLAY_TOPICS_NUMBER = 10
 TOPIC_CONFIG_PAGE_SIZE = 10
 TOTAL_TOPIC = ranked_topics['Topic'].count()
 
-topic_over_time = get_topics_over_time(ranked_topics[:10]['Topic'])
+topic_over_time = get_topics_over_time(ranked_topics[:DISPLAY_TOPICS_NUMBER]['Topic'])
 topic_over_time.update_layout(
     {
         "width":None,
@@ -62,11 +62,11 @@ topic_over_time.update_layout(
         ),
         "legend":dict(
             font_color="#f4f4f4",
-            # orientation="h",
-            # yanchor="bottom",
-            # y=1.02,
-            # xanchor="center",
-            # x=0.5
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
         ),
     }
 )
@@ -74,7 +74,8 @@ topic_over_time.update_layout(
 # LAYOUT 
 layout = dbc.Container(    
     [
-        # first layer
+        # title
+        title_page_row('Topic'), # first layer
         dbc.Row(
             [
                 # trending topics
@@ -87,11 +88,12 @@ layout = dbc.Container(
                                 html.Div(
                                     [
                                         html.Span(f"#{index+1}",className='trending-topic-index', ),
-                                        html.Span(" ".join(topic.split('_')[1:3]),className="trending-topic-text")
+                                        # html.Span(" ".join(topic.split('_')[1:3]),className="trending-topic-text")
+                                        html.Span(topic,className="trending-topic-text")
                                     ],
                                     className="mb-1 p-2 trending-topic-content",
                                 )
-                                for index,topic in enumerate(ranked_topics[:10]['Name'].tolist())
+                                for index,topic in enumerate(ranked_topics[:DISPLAY_TOPICS_NUMBER]['CustomName'].tolist())
                             ]
                         )
                     ],
@@ -108,8 +110,10 @@ layout = dbc.Container(
                         dcc.Graph(
                             figure=go.Figure({
                                 "data":[
-                                    {'x': ranked_topics[:DISPLAY_TOPICS_NUMBER]['Name'].apply(lambda x: ' '.join(x.split('_')[1:3])), 'y': ranked_topics[:DISPLAY_TOPICS_NUMBER]['RTs Count'],'type': 'bar', 'name': 'Retweets','marker_color':'#00ba7c',},
-                                    {'x': ranked_topics[:DISPLAY_TOPICS_NUMBER]['Name'].apply(lambda x: ' '.join(x.split('_')[1:3])), 'y': ranked_topics[:DISPLAY_TOPICS_NUMBER]['Likes Count'],'type': 'bar', 'name': 'Likes','marker_color':'#f2c4cb',},
+                                    # {'x': ranked_topics[:DISPLAY_TOPICS_NUMBER]['Name'].apply(lambda x: ' '.join(x.split('_')[1:3])), 'y': ranked_topics[:DISPLAY_TOPICS_NUMBER]['RTs Count'],'type': 'bar', 'name': 'Retweets','marker_color':'#00ba7c',},
+                                    # {'x': ranked_topics[:DISPLAY_TOPICS_NUMBER]['Name'].apply(lambda x: ' '.join(x.split('_')[1:3])), 'y': ranked_topics[:DISPLAY_TOPICS_NUMBER]['Likes Count'],'type': 'bar', 'name': 'Likes','marker_color':'#f2c4cb',},
+                                    {'x': ranked_topics[:DISPLAY_TOPICS_NUMBER]['CustomName'], 'y': ranked_topics[:DISPLAY_TOPICS_NUMBER]['RTs Count'],'type': 'bar', 'name': 'Retweets','marker_color':'#00ba7c',},
+                                    {'x': ranked_topics[:DISPLAY_TOPICS_NUMBER]['CustomName'], 'y': ranked_topics[:DISPLAY_TOPICS_NUMBER]['Likes Count'],'type': 'bar', 'name': 'Likes','marker_color':'#f2c4cb',},
                                 ],
                                 "layout":{
                                     # "width":600,
@@ -183,7 +187,7 @@ layout = dbc.Container(
         html.Hr(),
         # second layer
         dbc.Row([
-            #topics
+            #topics button
             dbc.Col([
                 html.Div(
                     [
@@ -191,7 +195,8 @@ layout = dbc.Container(
                             [
                                 html.Span("Topics",className="second-topic-config-title title-chart-size"), 
                                 html.Span(
-                                    " ".join(ranked_topics['Name'][ranked_topics['Topic'] == 3].iloc[0].split('_')[1:3]),
+                                    # " ".join(ranked_topics['Name'][ranked_topics['Topic'] == 3].iloc[0].split('_')[1:3]),
+                                    ranked_topics['CustomName'][ranked_topics['Topic'] == 5].iloc[0],
                                     id="second-topic-config-selected",className="badge bg-success d-none")                           
                             ],
                             className="d-flex justify-content-between mb-3"
@@ -339,7 +344,8 @@ def generate_topics_buttons(active_page):
     end_index = start_index + 10
 
     buttons = []
-    for topic_id, topic in zip(ranked_topics[start_index:end_index]['Topic'],ranked_topics[start_index:end_index]['Name'].apply(lambda x: " ".join(x.split('_')[1:3]))):
+    # for topic_id, topic in zip(ranked_topics[start_index:end_index]['Topic'],ranked_topics[start_index:end_index]['Name'].apply(lambda x: " ".join(x.split('_')[1:3]))):
+    for topic_id, topic in zip(ranked_topics[start_index:end_index]['Topic'],ranked_topics[start_index:end_index]['CustomName']):
         button = dbc.Button(id={"type":"second-topic-button","topic_id":topic_id,"index":start_index}, children=topic, class_name="second-topic-config-button", color="light",active=False)
         buttons.append(button)
         start_index+=1
@@ -383,6 +389,7 @@ def update_store_selected_topic(args,data,active_page,):
     Input("topic-pagination","active_page"),
 )
 def set_active_button(data,active_page):
+    total_buttons= TOTAL_TOPIC - ((active_page-1)*10) if active_page == math.ceil(TOTAL_TOPIC/10) else 10  
 
     active = "secondary"
     not_active = "light"
@@ -394,7 +401,7 @@ def set_active_button(data,active_page):
         button_id = int(index[-1])
 
     return [
-        active if button_id == i and int(data['active_page']) == active_page else not_active for i in range(10)
+        active if button_id == i and int(data['active_page']) == active_page else not_active for i in range(total_buttons)
     ]
 
 @callback(
@@ -404,7 +411,8 @@ def set_active_button(data,active_page):
 )
 def update_topic_name(data):
     return [
-        " ".join(ranked_topics['Name'][ranked_topics['Topic'] == int(data['topic_id'])].iloc[0].split('_')[1:3])
+        # " ".join(ranked_topics['Name'][ranked_topics['Topic'] == int(data['topic_id'])].iloc[0].split('_')[1:3])
+        ranked_topics['CustomName'][ranked_topics['Topic'] == int(data['topic_id'])].iloc[0]
         for _ in range(2)
     ] 
 
