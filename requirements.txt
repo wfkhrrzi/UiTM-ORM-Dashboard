@@ -1,0 +1,9 @@
+pandas
+dash
+dash-bootstrap-components
+flask
+flask-sqlalchemy
+flask-login
+wordcloud
+requests
+python-dotenv
