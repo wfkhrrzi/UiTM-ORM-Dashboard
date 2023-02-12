@@ -2,17 +2,23 @@ import plotly
 import requests
 import pandas as pd
 from env.config import BERTOPIC_HOST
+import pickle
+import json
 
 def get_topic_info() -> pd.DataFrame:
-    return pd.DataFrame.from_dict(requests.get(f"{BERTOPIC_HOST}/topic-info").json())
+    # return pd.DataFrame.from_dict(requests.get(f"{BERTOPIC_HOST}/topic-info").json())
+    with open('dataset/topic-info.pkl', 'rb') as f:
+        return pd.DataFrame.from_dict(pickle.load(f))
 
 def get_all_topics():
-    return requests.get(f"{BERTOPIC_HOST}/topics").json()
+    # return requests.get(f"{BERTOPIC_HOST}/topics").json()
+    with open('dataset/topic-topics.json', 'r') as f:
+        return json.load(f)
 
-def get_topic_barchart() -> plotly.graph_objs.Figure:
-    topic_barchart = requests.get(f"{BERTOPIC_HOST}/visualize-barchart").json()
-    topic_barchart = plotly.io.from_json(topic_barchart)
-    return topic_barchart
+# def get_topic_barchart() -> plotly.graph_objs.Figure:
+#     topic_barchart = requests.get(f"{BERTOPIC_HOST}/visualize-barchart").json()
+#     topic_barchart = plotly.io.from_json(topic_barchart)
+#     return topic_barchart
 
 def get_dataset():
     return pd.read_csv('dataset/topic-labelled-20221226T173040-normalized-uitmRemoved-nr20.csv')
@@ -31,8 +37,12 @@ def get_ranked_topics() -> pd.DataFrame:
 ranked_topics = get_ranked_topics()
 
 def get_topics_over_time(topics: list) -> plotly.graph_objs.Figure:
-    topic_over_time = requests.get(f"{BERTOPIC_HOST}/visualize-topics-over-time",params={'topics':topics}).json()
-    topic_over_time = plotly.io.from_json(topic_over_time)
+
+    with open('dataset/topic-over-time.pkl', 'rb') as f:
+        topic_over_time = plotly.graph_objs.Figure(pickle.load(f))
+
+    # topic_over_time = requests.get(f"{BERTOPIC_HOST}/visualize-topics-over-time",params={'topics':topics}).json()
+    # topic_over_time = plotly.io.from_json(topic_over_time)
     
     topic_over_time=topic_over_time.to_dict()
     # topic_info = get_topic_info()

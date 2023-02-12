@@ -6,7 +6,7 @@ from env.config import APP_DEBUG
 
 if __name__=="__main__":
     app.run(
-        debug=False,
+        debug=True,
         host= '0.0.0.0',
         port='80'
         # dev_tools_hot_reload=False,
