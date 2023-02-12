@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime as dt
-from pages.topics.topics_data import get_ranked_topics, get_dataset as topic_dataset, get_topic_info
+from pages.topics.topics_data import ranked_topics, df as topic_df, topic_info
 import numpy as np
 
 def get_dataset() -> pd.DataFrame:
@@ -9,7 +9,7 @@ def get_dataset() -> pd.DataFrame:
 
 def get_processed_dataset():
     df = get_dataset()
-    topic_df = topic_dataset()
+    # topic_df = topic_dataset()
 
     # required processes
     df = pd.merge(df,topic_df[['Tweet Id','Processed noisy tweet']],on='Tweet Id',how='left')
@@ -32,7 +32,7 @@ def get_sentiment_over_time() -> pd.DataFrame:
     return sentiment_over_time
 
 def get_sentiment_by_topic() -> pd.DataFrame:
-    topic_df = topic_dataset()
+    # topic_df = topic_dataset()
     df = get_dataset()
 
     # required processes
@@ -49,7 +49,7 @@ def get_sentiment_by_topic() -> pd.DataFrame:
     topic_sentiment_df = topic_sentiment_df[(topic_sentiment_df['Topic'] != -1)&(topic_sentiment_df['Topic'] != 1)]
     topic_sentiment_df['total'] = topic_sentiment_df['positive'] + topic_sentiment_df['neutral'] + topic_sentiment_df['negative']
 
-    ranked_topics = get_ranked_topics()
+    # ranked_topics = get_ranked_topics()
     topic_sentiment_df = topic_sentiment_df.iloc[pd.Index(topic_sentiment_df['Topic']).get_indexer(ranked_topics[:10]['Topic'].tolist())]
     # topic_name = ranked_topics[:10]['Name'].apply(lambda x: " ".join(x.split('_')[1:3]))
     topic_name = ranked_topics[:10]['CustomName']
@@ -59,13 +59,13 @@ def get_sentiment_by_topic() -> pd.DataFrame:
 
 def get_trending_topics():
     df = get_dataset()
-    topic_df = topic_dataset()
+    # topic_df = topic_dataset()
 
     # merge processed tweet
     df = pd.merge(df,topic_df[['Tweet Id','Processed noisy tweet','Topic reassigned']],on='Tweet Id',how='left')
     df.dropna(inplace=True)
     
-    topic_info = get_topic_info()
+    # topic_info = get_topic_info()
     trending_topics = df.groupby(by=['Sentiment','Topic reassigned']).count()[['RTs Count','Likes Count']].sort_values(by=['RTs Count','Likes Count'],ascending=False).reset_index()
     trending_topics = trending_topics[(trending_topics['Topic reassigned']!=-1)&(trending_topics['Topic reassigned']!=1)]
     # topic_name = trending_topics['Topic reassigned'].apply(lambda x: topic_info['Name'][topic_info['Topic']==x].tolist()[0])
