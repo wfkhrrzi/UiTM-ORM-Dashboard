@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 import pandas as pd
 
 from layout.utils import title_chart, title_page_row
-from pages.topics.topics_data import get_ranked_topics
+from pages.topics.topics_data import ranked_topics
 
 # layout = dbc.Container("CLASSIFY TWEET",fluid=True,class_name="text-center text-light fw-bolder")
 
@@ -142,7 +142,10 @@ def donut_chart(percent, theme_color:str):
 )
 def predict_tweet(n_clicks, input_tweet):
     if n_clicks:
-        prediction = sentiment_predict(input_tweet)
+        try:
+            prediction = sentiment_predict(input_tweet)
+        except:
+            pass
 
         sentiment_stats = prediction.copy()
         sentiment_stats.pop('sentiment')
@@ -229,7 +232,7 @@ def predict_tweet(n_clicks, input_tweet):
             )
         ]
 
-ranked_topics = get_ranked_topics()
+# ranked_topics = get_ranked_topics()
 ranked_topics = ranked_topics.reset_index(drop=True)
 
 @callback(

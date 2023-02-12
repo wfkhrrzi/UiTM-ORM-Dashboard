@@ -8,7 +8,7 @@ import plotly.express as px
 from wordcloud import WordCloud
 from datetime import datetime
 import math
-from pages.topics.topics_data import get_ranked_topics,get_dataset,get_topics_over_time,get_all_topics
+from pages.topics.topics_data import ranked_topics,get_topics_over_time,get_all_topics,df
 from layout.utils import title_chart, title_page_row
 
 # layout = dbc.Container("TOPIC",fluid=True,class_name="text-center text-light fw-bolder")
@@ -16,9 +16,9 @@ from layout.utils import title_chart, title_page_row
 # INITIALIZATION
 topics_all = get_all_topics()
 
-df = get_dataset()
+# df = get_dataset()
 
-ranked_topics = get_ranked_topics()
+# ranked_topics = get_ranked_topics()
 
 DISPLAY_TOPICS_NUMBER = 10
 TOPIC_CONFIG_PAGE_SIZE = 10
