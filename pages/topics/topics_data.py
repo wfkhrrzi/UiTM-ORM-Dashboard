@@ -36,10 +36,20 @@ def get_ranked_topics() -> pd.DataFrame:
 
 ranked_topics = get_ranked_topics()
 
-def get_topics_over_time(topics: list) -> plotly.graph_objs.Figure:
+def get_topics_over_time(topic: str) -> plotly.graph_objs.Figure:
+    """
+        topic: str ==> 'top10', 'after10'
+    """
 
-    with open('dataset/topic-over-time.pkl', 'rb') as f:
-        topic_over_time = plotly.graph_objs.Figure(pickle.load(f))
+    if topic=='top10':
+        with open('dataset/topic-over-time-top10.pkl', 'rb') as f:
+            return plotly.graph_objs.Figure(pickle.load(f))
+    elif topic=='after10':
+        with open('dataset/topic-over-time-after10.pkl', 'rb') as f:
+            return plotly.graph_objs.Figure(pickle.load(f))
+    else:
+        with open('dataset/topic-over-time.pkl', 'rb') as f:
+            return plotly.graph_objs.Figure(pickle.load(f))
 
     # topic_over_time = requests.get(f"{BERTOPIC_HOST}/visualize-topics-over-time",params={'topics':topics}).json()
     # topic_over_time = plotly.io.from_json(topic_over_time)

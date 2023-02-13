@@ -80,7 +80,7 @@ layout = dbc.Container(
                                     "color":"white",
                                     "min-height":"400px",
                                 },
-                                className="mt-2"
+                                className="mt-4"
                             ),
                         ),
                     ],
@@ -140,12 +140,21 @@ def donut_chart(percent, theme_color:str):
     Input("pred-submit","n_clicks"),
     State("pred-input-tweet","value")
 )
-def predict_tweet(n_clicks, input_tweet):
+def predict_sentiment(n_clicks, input_tweet):
     if n_clicks:
         try:
             prediction = sentiment_predict(input_tweet)
         except:
-            pass
+            return html.Div(
+                [
+                    html.Div(
+                        html.I(className="fa-solid fa-triangle-exclamation me-1",style={"color":"#ffcc2a","font-size":"72px"}),
+                        className="mb-3"
+                    ),
+                    html.H5("Prediction is not available",style={'font-weight':'700'}),
+                ],
+                className="text-center"
+            )
 
         sentiment_stats = prediction.copy()
         sentiment_stats.pop('sentiment')
@@ -244,10 +253,21 @@ def predict_topic(n_clicks, input_tweet):
     if n_clicks:
         # return str(topic_predict(input_tweet))
 
-        prediction = topic_predict(input_tweet)
+        try:
+            prediction = topic_predict(input_tweet)
+        except:
+            return html.Div(
+                [
+                    html.Div(
+                        html.I(className="fa-solid fa-triangle-exclamation me-1",style={"color":"#ffcc2a","font-size":"72px"}),
+                        className="mb-3"
+                    ),
+                    html.H5("Prediction is not available",style={'font-weight':'700',}),
+                ],
+                className="text-center"
+            )
 
-
-        topic_title = ranked_topics[ranked_topics['Topic'] == prediction['topic'][0]]['Name'].tolist()[0]
+        topic_title = ranked_topics[ranked_topics['Topic'] == prediction['topic'][0]]['CusomName'].tolist()[0]
         topic_rank = ranked_topics[ranked_topics['Topic'] == prediction['topic'][0]].index.tolist()[0] + 1
 
         return dbc.Row(
@@ -267,7 +287,7 @@ def predict_topic(n_clicks, input_tweet):
                             #topic title
                             html.Div(
                                 # prediction['topic'],
-                                " ".join(topic_title.split('_')[1:3]),
+                                " ".join(topic_title),
                                 className="topic-prediction-text",
                                 style={
                                     "font-weight":"500",

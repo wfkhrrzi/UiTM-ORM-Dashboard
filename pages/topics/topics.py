@@ -25,7 +25,7 @@ DISPLAY_TOPICS_NUMBER = 10
 TOPIC_CONFIG_PAGE_SIZE = 10
 TOTAL_TOPIC = ranked_topics['Topic'].count()
 
-topic_over_time = get_topics_over_time(ranked_topics[:DISPLAY_TOPICS_NUMBER]['Topic'])
+topic_over_time = get_topics_over_time('top10')
 topic_over_time.update_layout(
     {
         "width":None,
