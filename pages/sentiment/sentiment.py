@@ -9,6 +9,7 @@ from pages.sentiment.sentiment_data import get_dataset, get_processed_dataset, g
 from layout.utils import title_chart, title_page_row
 import plotly.express as px
 import plotly.graph_objs as go
+import pickle
 
 # layout = dbc.Container("SENTIMENT",fluid=True,class_name="text-center text-light fw-bolder")
 
@@ -355,6 +356,9 @@ def update_store_selected_topic(args,data,):
     Input('store-selected-sentiment','data'),
 )
 def generate_wordcloud(data):
+
+    with open(f"dataset/wordcloud-sentiment/wc-{data['sentiment']}", 'rb') as f:
+        return pickle.load(f)
 
     # instantiate wordcloud
     wordcloud = WordCloud(

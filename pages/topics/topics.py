@@ -10,6 +10,7 @@ from datetime import datetime
 import math
 from pages.topics.topics_data import ranked_topics,get_topics_over_time,get_all_topics,df
 from layout.utils import title_chart, title_page_row
+import pickle
 
 # layout = dbc.Container("TOPIC",fluid=True,class_name="text-center text-light fw-bolder")
 
@@ -547,6 +548,9 @@ def generate_topic_score(data):
     Input('store-selected-topic','data'),
 )
 def generate_wordcloud(data):
+
+    with open(f"dataset/wordcloud-topic/wc-{data['topic_id']}", 'rb') as f:
+        return pickle.load(f)
 
     # instantiate wordcloud
     wordcloud = WordCloud(
