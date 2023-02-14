@@ -267,7 +267,7 @@ def predict_topic(n_clicks, input_tweet):
                 className="text-center"
             )
 
-        topic_title = ranked_topics[ranked_topics['Topic'] == prediction['topic'][0]]['CusomName'].tolist()[0]
+        topic_title = ranked_topics[ranked_topics['Topic'] == prediction['topic'][0]]['CustomName'].tolist()[0]
         topic_rank = ranked_topics[ranked_topics['Topic'] == prediction['topic'][0]].index.tolist()[0] + 1
 
         return dbc.Row(
