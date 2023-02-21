@@ -72,6 +72,11 @@ This file contains a complete guideline for installing the dashboard and machine
 
 7. The website then can be accessed at http://127.0.0.1:80
 
+    A sample login credential is as follow:-
+
+        Username: test
+        Password: test 
+
 <br>
 
 ## ML Model Installation
