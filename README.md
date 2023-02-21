@@ -3,7 +3,8 @@
 This file contains a complete guideline for installing the dashboard and machine learning (ML) models for the project on a Windows-based machine.
 
 ## Dashboard Installation & Build
-
+<hr>
+<br>
 1. Install Python 3.10 from Microsoft Store
 
 2. Download and extract the zip file named <b>dashboard</b> to your preferred location. The file structure should look like this
@@ -75,7 +76,8 @@ This file contains a complete guideline for installing the dashboard and machine
 <br>
 
 ## ML Model Installation
-
+<hr>
+<br>
 It is important to note that the ML model installation is <b>OPTIONAL</b> because the dashboard does not depend on the models. The models are only required when the user wants to utilize the <b>tweet classification</b> functionality in the 'Classify Tweet' page within the dashboard.
 
 This process deploys the models in **Google Colab**. Hence, a **Google Drive (GD)** account is required to complete the process.
