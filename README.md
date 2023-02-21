@@ -118,7 +118,7 @@ This process deploys the models in **Google Colab**. Hence, a **Google Drive (GD
 
     <img src="README\Screenshot 2023-02-21 181030.png" width="550">
 
-8. In the local project directory, navigate to the `env/.env`
+8. In the local project directory, navigate to (env\.env)
 
 9. Paste the copied URL in `BERTOPIC_HOST` entry
 
