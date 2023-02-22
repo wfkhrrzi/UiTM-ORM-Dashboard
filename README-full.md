@@ -1,6 +1,13 @@
 # UiTM Online Reputation using Sentiment Analysis and Topic Modelling
 
-This file contains a complete guideline for installing the dashboard and machine learning (ML) models for the project on a Windows-based machine.
+Here's the [link](https://uitm-orm.herokuapp.com) to review the sample dashboard, deployed in Heroku: https://uitm-orm.herokuapp.com
+
+A user login is required to access the dashboard. A sample login credential is as follows:
+
+        Username: test
+        Password: test
+
+Below entails a complete guideline for installing the dashboard and machine learning (ML) models for the project on a Windows-based machine.
 
 ## Dashboard Installation & Build
 
