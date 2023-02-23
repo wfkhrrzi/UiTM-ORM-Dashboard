@@ -7,7 +7,7 @@ A user login is required to access the dashboard. A sample login credential is a
         Username: test
         Password: test
 
-Below entails a complete guideline for installing the dashboard and machine learning (ML) models for the project on a Windows-based machine.
+Below entails a complete guideline for installing the dashboard and machine learning (ML) models pertaining to the project on a Windows-based machine.
 
 ## Dashboard Installation & Build
 
